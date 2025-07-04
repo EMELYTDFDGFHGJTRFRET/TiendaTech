@@ -52,37 +52,28 @@ let cart = [];
 
 products.forEach((product, index) => {
   const card = document.createElement("div");
-  card.classList.add("card");
-
+  card.className = "product-card";
   card.innerHTML = `
     <img src="${product.image}" alt="${product.name}">
-    <h2>${product.name}</h2>
+    <h3>${product.name}</h3>
     <p>$${product.price.toFixed(2)}</p>
-    <button onclick="addToCart(${index})">Agregar al carrito</button>
+    <button onclick="addToCart(${index})">Agregar</button>
   `;
-
   container.appendChild(card);
 });
 
 function addToCart(index) {
   cart.push(products[index]);
-  renderCart();
+  updateCart();
 }
 
-function removeFromCart(index) {
-  cart.splice(index, 1);
-  renderCart();
-}
-
-function renderCart() {
+function updateCart() {
   cartList.innerHTML = "";
   let subtotal = 0;
-
-  cart.forEach((item, i) => {
-    subtotal += item.price;
+  cart.forEach((product, i) => {
+    subtotal += product.price;
     const li = document.createElement("li");
-    li.innerHTML = `${item.name} - $${item.price.toFixed(2)} 
-      <button onclick="removeFromCart(${i})" style="margin-left:10px; color:red;">🗑️</button>`;
+    li.textContent = `${product.name} - $${product.price.toFixed(2)}`;
     cartList.appendChild(li);
   });
 
@@ -95,11 +86,51 @@ function renderCart() {
   totalEl.textContent = total.toFixed(2);
 }
 
-document.getElementById("payButton").addEventListener("click", () => {
-  alert("Aquí se iniciaría la integración con PayPhone (modo prueba).");
-});
-
 document.getElementById("clearCart").addEventListener("click", () => {
   cart = [];
-  renderCart();
+  updateCart();
+});
+
+// ✅ Integración con PayPhone
+document.getElementById("payButton").addEventListener("click", () => {
+  const totalValue = parseFloat(totalEl.textContent);
+  if (totalValue === 0) {
+    alert("El carrito está vacío. Agrega productos antes de pagar.");
+    return;
+  }
+
+  // ✅ Crear body con datos para el link de pago
+  const transactionData = {
+    amount: Math.round(totalValue * 100), // PayPhone usa centavos
+    amountWithoutTax: Math.round((totalValue / 1.12) * 100),
+    tax: Math.round(totalValue * 0.12 * 100),
+    clientTransactionId: Date.now().toString(),
+    phoneNumber: "",  // vaciar o dejar fijo en pruebas
+    email: "prueba@tiendatech.com",
+    storeId: "FSR3zhzLSUeG8YmtsCjSBw", // <--- TU IDENTIFICADOR (revisa en PayPhone)
+    reference: "Compra en TiendaTech"
+  };
+
+  fetch("https://pay.payphonetodoesposible.com/api/button", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer xhibIYyzWUWzBonsmeCP6A" // <--- TU TOKEN DE PRODUCCIÓN
+    },
+    body: JSON.stringify(transactionData)
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log("✅ Link de pago generado:", data);
+      if (data.transactionId && data.paymentURL) {
+        const payphone = new PayphoneCheckout();
+        payphone.openUrl(data.paymentURL); // Abrir caja real
+      } else {
+        alert("Error generando transacción.");
+      }
+    })
+    .catch(error => {
+      console.error("❌ Error en transacción:", error);
+      alert("Error al crear el pago.");
+    });
 });
