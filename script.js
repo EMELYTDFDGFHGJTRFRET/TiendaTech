@@ -1,4 +1,3 @@
-
 const products = [
   {
     name: "Laptop Lenovo i5",
@@ -93,21 +92,24 @@ document.getElementById("clearCart").addEventListener("click", () => {
 
 // ✅ Integración con PayPhone
 document.getElementById("payButton").addEventListener("click", () => {
-  const totalValue = parseFloat(totalEl.textContent);
+  const totalValue = parseFloat(document.getElementById("total").textContent);
   if (totalValue === 0) {
     alert("El carrito está vacío. Agrega productos antes de pagar.");
     return;
   }
 
-  // ✅ Crear body con datos para el link de pago
+  // ⚠️ Reemplaza con tus datos reales
+  const storeId = "FSR3zhzLSUeG8YmtsCjSBw";
+  const token = "xhiblYy2WUWzBonsmeCP6A";
+
   const transactionData = {
-    amount: Math.round(totalValue * 100), // PayPhone usa centavos
+    amount: Math.round(totalValue * 100), // centavos
     amountWithoutTax: Math.round((totalValue / 1.12) * 100),
     tax: Math.round(totalValue * 0.12 * 100),
     clientTransactionId: Date.now().toString(),
-    phoneNumber: "",  // vaciar o dejar fijo en pruebas
+    phoneNumber: "", // vacío en pruebas
     email: "prueba@tiendatech.com",
-    storeId: "FSR3zhzLSUeG8YmtsCjSBw", // <--- TU IDENTIFICADOR (revisa en PayPhone)
+    storeId: storeId,
     reference: "Compra en TiendaTech"
   };
 
@@ -115,7 +117,7 @@ document.getElementById("payButton").addEventListener("click", () => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": "Bearer xhibIYyzWUWzBonsmeCP6A" // <--- TU TOKEN DE PRODUCCIÓN
+      "Authorization": `Bearer ${token}`
     },
     body: JSON.stringify(transactionData)
   })
@@ -124,13 +126,14 @@ document.getElementById("payButton").addEventListener("click", () => {
       console.log("✅ Link de pago generado:", data);
       if (data.transactionId && data.paymentURL) {
         const payphone = new PayphoneCheckout();
-        payphone.openUrl(data.paymentURL); // Abrir caja real
+        payphone.openUrl(data.paymentURL); // Abre la caja real
       } else {
-        alert("Error generando transacción.");
+        alert("Error generando link de pago. Verifica credenciales o Store ID.");
       }
     })
     .catch(error => {
-      console.error("❌ Error en transacción:", error);
-      alert("Error al crear el pago.");
+      console.error("❌ Error al crear la transacción:", error);
+      alert("Error al iniciar el pago. Revisa consola.");
     });
 });
+
