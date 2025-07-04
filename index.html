@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TiendaTech - PayPhone</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.payphone.com.ec/lib/js/payphone.js"></script>
+</head>
+<body>
+  <header>
+    <h1>🛒 TiendaTech</h1>
+    <p class="subtitle">Tecnología al mejor precio. Paga fácil con PayPhone.</p>
+  </header>
+
+  <main>
+    <section class="product-container" id="product-list"></section>
+
+    <section class="cart-section">
+      <h2>🛍️ Carrito (<span id="cart-count">0</span>)</h2>
+      <ul id="cart"></ul>
+      <div id="totals">
+        <p>Subtotal: $<span id="subtotal">0.00</span></p>
+        <p>IVA (12%): $<span id="iva">0.00</span></p>
+        <p><strong>Total: $<span id="total">0.00</span></strong></p>
+      </div>
+      <div class="cart-buttons">
+        <button id="payButton" class="pay-btn">💳 Pagar con PayPhone</button>
+        <button id="clearCart" class="clear-btn">🗑️ Vaciar carrito</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 TiendaTech - Todos los derechos reservados.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
