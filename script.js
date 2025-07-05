@@ -112,7 +112,7 @@ document.getElementById("payButton").addEventListener("click", () => {
   }
 
   const storeId = "48IqeOCuZUWzPg3KOog4hQ"; // Reemplaza con el tuyo
-  const token = "Bearer xhibIYyzWUWzBonsmeCP6A"; // Reemplaza con el tuyo
+  const token = "xhibIYyzWUWzBonsmeCP6A"; // Reemplaza con el tuyo
 
   const transactionData = {
     amount: Math.round(totalValue * 100),
