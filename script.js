@@ -112,7 +112,7 @@
     }
 
     const storeId = "a543e0bf-0f66-47bd-a157-0c4b6aa228e1"; // Reemplaza con el tuyo
-    const token = "Bearer EQK4qW2ZUDkvg5_-aqJL3pvWs5t_FzMQkazU9a9wgiXAOC9uyNWlL91_veOBSjCt1jXPVkkL9-CECCWF6DZsxnA3WOFnUTt6JWTFBvbVpIAcw1MR4SE6zvcw9r7OwEv6T9P3GgLY6b1vz2ymtyNvTSfw2pOp-cTxe51lNEa36s7GEXTYr3UjrAW1CGwRHiqYJAIclWkMbcBr3yhO2PRzH4oqaQoMMzY7olSiiToE8QtaGVt5S1pQSmc34MG-d2RnRrj5TJVS7VJy9CPnrV_S3RdoctKZumcAJGCfbEpbMGWA1FnUizblLNOT7dq6QjG3DQhiTxqQHi2nbAoEFGCJ2HWI3oM"; // Reemplaza con el tuyo
+    const token = "Bearer wVl6dmCsbryHTpkZRcCApurh1AGPIHrU-2LIGTOo_Ttiw7_LDQDXP04zzV3I5JnfgteiB-CNE_wpYJui4jqz6_WJijwWlH56F5S4jFMPL1F_KDE2ctr8RstPTn4rIRZjqFDxDHCtM-Hor2xdT542cEUDmQ-ZKFT-3LG663Z0DCByMZVsSWUZQNCpBBPVJCorD-53xUjyVbqg4X-QZ2hwaHa75OMMkmZVW7xDFQgS8EYW8896tE1BbYXt5FK1J0b4p9KCh6_Z9BKydZYo9XYvrpLa3YzjVpBq9Qn9wDGLSt4cDObkr2Qw3QFdJaPjBAqMzKHSu3AY2vk4pcOBou36z0kWmic"; // Reemplaza con el tuyo
 
     const transactionData = {
       amount: Math.round(totalValue * 100),
