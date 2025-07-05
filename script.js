@@ -39,7 +39,8 @@ const products = [
     price: 300,
     image: "img/impresora_epson.png"
   },
-]
+];
+
 const container = document.getElementById("product-list");
 const cartList = document.getElementById("cart");
 const cartCount = document.getElementById("cart-count");
@@ -51,12 +52,12 @@ let cart = [];
 
 products.forEach((product, index) => {
   const card = document.createElement("div");
-  card.className = "product-card";
+  card.className = "card";
   card.innerHTML = `
     <img src="${product.image}" alt="${product.name}">
     <h3>${product.name}</h3>
     <p>$${product.price.toFixed(2)}</p>
-    <button onclick="addToCart(${index})">Agregar</button>
+    <button class="agregar-btn" onclick="addToCart(${index})">Agregar</button>
   `;
   container.appendChild(card);
 });
@@ -69,10 +70,15 @@ function addToCart(index) {
 function updateCart() {
   cartList.innerHTML = "";
   let subtotal = 0;
+
   cart.forEach((product, i) => {
     subtotal += product.price;
     const li = document.createElement("li");
-    li.textContent = `${product.name} - $${product.price.toFixed(2)}`;
+    li.innerHTML = `
+      ${product.name} - $${product.price.toFixed(2)}
+      <button onclick="removeFromCart(${i})"
+        style="margin-left: 10px; background: transparent; border: none; color: red; cursor: pointer;">🗑️</button>
+    `;
     cartList.appendChild(li);
   });
 
@@ -83,6 +89,11 @@ function updateCart() {
   subtotalEl.textContent = subtotal.toFixed(2);
   ivaEl.textContent = iva.toFixed(2);
   totalEl.textContent = total.toFixed(2);
+}
+
+function removeFromCart(index) {
+  cart.splice(index, 1);
+  updateCart();
 }
 
 document.getElementById("clearCart").addEventListener("click", () => {
@@ -103,11 +114,11 @@ document.getElementById("payButton").addEventListener("click", () => {
   const token = "xhiblYy2WUWzBonsmeCP6A";
 
   const transactionData = {
-    amount: Math.round(totalValue * 100), // centavos
+    amount: Math.round(totalValue * 100),
     amountWithoutTax: Math.round((totalValue / 1.12) * 100),
     tax: Math.round(totalValue * 0.12 * 100),
     clientTransactionId: Date.now().toString(),
-    phoneNumber: "", // vacío en pruebas
+    phoneNumber: "",
     email: "prueba@tiendatech.com",
     storeId: storeId,
     reference: "Compra en TiendaTech"
@@ -126,7 +137,7 @@ document.getElementById("payButton").addEventListener("click", () => {
       console.log("✅ Link de pago generado:", data);
       if (data.transactionId && data.paymentURL) {
         const payphone = new PayphoneCheckout();
-        payphone.openUrl(data.paymentURL); // Abre la caja real
+        payphone.openUrl(data.paymentURL);
       } else {
         alert("Error generando link de pago. Verifica credenciales o Store ID.");
       }
@@ -136,4 +147,5 @@ document.getElementById("payButton").addEventListener("click", () => {
       alert("Error al iniciar el pago. Revisa consola.");
     });
 });
+
 
