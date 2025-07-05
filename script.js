@@ -147,5 +147,3 @@ document.getElementById("payButton").addEventListener("click", () => {
       alert("Error al iniciar el pago. Revisa consola.");
     });
 });
-
-
