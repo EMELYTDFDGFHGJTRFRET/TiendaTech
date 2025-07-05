@@ -67,6 +67,11 @@ function addToCart(index) {
   updateCart();
 }
 
+function removeFromCart(index) {
+  cart.splice(index, 1);
+  updateCart();
+}
+
 function updateCart() {
   cartList.innerHTML = "";
   let subtotal = 0;
@@ -91,59 +96,40 @@ function updateCart() {
   totalEl.textContent = total.toFixed(2);
 }
 
-function removeFromCart(index) {
-  cart.splice(index, 1);
-  updateCart();
-}
-
+// Vaciar carrito
 document.getElementById("clearCart").addEventListener("click", () => {
   cart = [];
   updateCart();
+  document.getElementById("pp-button").innerHTML = ""; // Limpiar la cajita si había
 });
 
-// ✅ Integración con PayPhone
+// ✅ Usar PayPhone Payment Box
 document.getElementById("payButton").addEventListener("click", () => {
-  const totalValue = parseFloat(document.getElementById("total").textContent);
+  const totalValue = parseFloat(totalEl.textContent);
   if (totalValue === 0) {
     alert("El carrito está vacío. Agrega productos antes de pagar.");
     return;
   }
 
-  // ⚠️ Reemplaza con tus datos reales
-  const storeId = "48IqeOCuZUWzPg3KOog4hQ";
-  const token = "xhibIYyzWUWzBonsmeCP6A";
+  const storeId = "48IqeOCuZUWzPg3KOog4hQ"; // Reemplaza con el tuyo
+  const token = "Bearer xhibIYyzWUWzBonsmeCP6A"; // Reemplaza con el tuyo
 
   const transactionData = {
     amount: Math.round(totalValue * 100),
     amountWithoutTax: Math.round((totalValue / 1.12) * 100),
-    tax: Math.round(totalValue * 0.12 * 100),
+    tax: Math.round((totalValue * 0.12) * 100),
     clientTransactionId: Date.now().toString(),
-    phoneNumber: "",
-    email: "prueba@tiendatech.com",
-    storeId: storeId,
-    reference: "Compra en TiendaTech"
+    storeId,
+    reference: "Compra en TiendaTech",
+    currency: "USD",
+    email: "cliente@tiendatech.com",
+    returnUrl: "https://tiendatech.onrender.com/confirmacion.html"
   };
 
-  fetch("https://pay.payphonetodoesposible.com/api/button", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
-    },
-    body: JSON.stringify(transactionData)
-  })
-    .then(response => response.json())
-    .then(data => {
-      console.log("✅ Link de pago generado:", data);
-      if (data.transactionId && data.paymentURL) {
-        const payphone = new PayphoneCheckout();
-        payphone.openUrl(data.paymentURL);
-      } else {
-        alert("Error generando link de pago. Verifica credenciales o Store ID.");
-      }
-    })
-    .catch(error => {
-      console.error("❌ Error al crear la transacción:", error);
-      alert("Error al iniciar el pago. Revisa consola.");
-    });
+  const payButton = new PPaymentButtonBox({
+    token,
+    ...transactionData
+  });
+
+  payButton.render("pp-button"); // Muestra la cajita en el div correspondiente
 });

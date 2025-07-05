@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmación de Pago - TiendaTech</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main style="max-width: 600px; margin: auto; padding: 2rem;">
+    <h1>✅ Confirmación de Pago</h1>
+    <div id="resultado" style="margin-top: 1.5rem; font-size: 1rem;">
+      <p>Procesando información de la transacción...</p>
+    </div>
+    <div style="margin-top: 2rem;">
+      <a href="index.html" class="pay-btn">⬅️ Volver a la tienda</a>
+    </div>
+  </main>
+
+  <script>
+    const resultado = document.getElementById("resultado");
+
+    const params = new URLSearchParams(window.location.search);
+    const transactionId = params.get("id");
+    const clientTransactionId = params.get("clientTransactionId");
+
+    const token = "Bearer xhibIYyzWUWzBonsmeCP6A"; // Usa tu token real aquí
+
+    if (transactionId && clientTransactionId) {
+      fetch("https://pay.payphonetodoesposible.com/api/button/V2/Confirm", {
+        method: "POST",
+        headers: {
+          "Authorization": token,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          id: transactionId,
+          clientTransactionId: clientTransactionId
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log("✅ Transacción confirmada:", data);
+          resultado.innerHTML = `
+            <p><strong>Estado:</strong> ${data.transactionStatus}</p>
+            <p><strong>Monto:</strong> $${(data.amount / 100).toFixed(2)}</p>
+            <p><strong>ID Transacción Cliente:</strong> ${data.clientTransactionId}</p>
+            <p><strong>ID Transacción PayPhone:</strong> ${data.transactionId}</p>
+            <p><strong>Email:</strong> ${data.email || 'No disponible'}</p>
+            <p><strong>Teléfono:</strong> ${data.phoneNumber || 'No disponible'}</p>
+          `;
+        })
+        .catch(error => {
+          console.error("❌ Error al confirmar transacción:", error);
+          resultado.innerHTML = `<p style="color:red;">Hubo un error al confirmar el pago. Revisa la consola.</p>`;
+        });
+    } else {
+      resultado.innerHTML = `<p style="color:red;">Parámetros de transacción no encontrados en la URL.</p>`;
+    }
+  </script>
+</body>
+</html>
